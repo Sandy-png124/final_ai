@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Test Case Generator</title>
+
+    <!-- Internal Styles -->
+    <style>
+        /* @import url('https://fonts.googleapis.com/css2?family=Merienda:wght@300..900&display=swap'); */
+        @import url('https://fonts.googleapis.com/css2?family=Jacques+Francois+Shadow&display=swap');
+
+        table,
+        tr,
+        th,
+        td {
+            border: 1px solid gray;
+            padding: 5px;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: center;
+            background-color: #EDBB99;
+            color: black;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background-color: rgb(233, 236, 239);
+            /* background-image: url('https://wallpapers.com/images/high/blue-ombre-background-1920-x-1152-48nnlmdk6rm2dvaa.webp'); */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .input-area {
+            margin-bottom: 10px;
+            border-radius: 10px;
+            width: 50rem;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            box-shadow: 3px 3px 9.5px 3.5px #b3b3b3;
+        }
+
+        textarea {
+            margin-right: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="number"] {
+            width: 53px;
+            margin-right: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            height: 34px;
+            background-color: #EDBB99;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            border-radius: 3px;
+        }
+
+        button:hover {
+            background-color: #ecb28b;
+        }
+
+        .response {
+            width: 78rem;
+            border: 1px solid #ddd;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #fff;
+            text-align: left;
+            overflow-wrap: break-word;
+            display: none;
+            height: 25.4rem;
+            overflow-y: auto;
+            box-shadow: 3px 3px 9.5px 3.5px #b3b3b3;
+        }
+
+        .download-link {
+            margin-top: 18px;
+            margin-left: 10px;
+            font-size: 2rem;
+            cursor: pointer;
+            border: 1px solid gray;
+            padding: 5px;
+            border-radius: 7px;
+        }
+
+        .titleAlpha {
+            font-size: 40px;
+            color: #EDBB99;
+        }
+
+        .download-link:hover {
+            border: 1px solid #EDBB99;
+            color: #EDBB99;
+        }
+
+        .title {
+            font-family: "Jacques Francois Shadow", serif;
+        }
+
+        .brand {
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .response.visible {
+            display: block;
+        }
+
+        .labels {
+            font-size: 12px;
+        }
+
+        .downloadableIcons {
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .countFields {
+            text-align: left;
+            width: 12rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .input-area {
+                flex-direction: column;
+                position: static;
+                margin-top: 20px;
+                bottom: auto;
+            }
+
+            textarea {
+                width: calc(100% - 160px);
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            input[type="number"] {
+                width: 60px;
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            .response {
+                margin-top: 10px;
+            }
+
+            p {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+        }
+
+        .downloadIcons {
+            display: flex;
+            width: 78rem;
+            justify-content: end;
+        }
+
+        .spinner {
+            width: 56px;
+            height: 56px;
+            --c: radial-gradient(farthest-side, #EDBB99 92%, #0000);
+            background: var(--c) 50% 0,
+                var(--c) 50% 100%,
+                var(--c) 100% 50%,
+                var(--c) 0 50%;
+            background-size: 13.4px 13.4px;
+            background-repeat: no-repeat;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            animation: spinner-kh173p 1s infinite;
+        }
+
+        @keyframes spinner-kh173p {
+            to {
+                transform: rotate(.5turn);
+            }
+        }
+    </style>
+
+    <!--Link for Jquery ,Table and Table 2 CSV    -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/table2csv@1.1.6/src/table2csv.min.js"></script>
+
+    <!-- Include marked.js for Markdown to HTML conversion -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- links for bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+</head>
+
+<body>
+
+    <div class="title">
+        <p style="font-size: 25px;margin: 5px;"> <span class="titleAlpha">Q </span>Case</p>
+    </div>
+
+    <!-- Input area and input fields -->
+    <div class="">
+        <div class="input-area">
+            <textarea id="prompt" rows="3" cols="70" placeholder="Enter your prompt here..."></textarea>
+
+            <div class="countFields">
+                <label for="" class="labels">Enter positive count</label>
+                <input type="number" id="positiveCount">
+            </div>
+
+            <div class="countFields">
+                <label for="" class="labels">Enter negative count</label>
+                <input type="number" id="negativeCount">
+            </div>
+
+            <button onclick="generateTestCases()" title="Generate"><i class="bi bi-send-fill"
+                    style="transform: rotate(45deg);"></i></button>
+        </div>
+    </div>
+
+    <!-- <p class="brand">Q Case.</p> -->
+    <!-- <table class="" id="promtValue" style="display: none; "></table> -->
+
+    <!-- Element for showing th response -->
+    <div class="">
+        <table class="response" id="response"></table>
+    </div>
+
+    <!-- Dowloadable Icons -->
+    <div class="downloadIcons">
+        <a id="download-link-xlsx" onclick="exportCSVExcel('.xls')" title="Export as Excel" class="download-link"
+            style="display: none;">
+            <!-- <i class="bi bi-filetype-xls"></i> -->
+            Download response <i class="bi bi-filetype-xls  downloadableIcons"></i>
+        </a>
+
+        <a id="download-link-csv" onclick="exportCSVExcel('.csv')" title="Export as CSV" class="download-link"
+            style="display: none;">
+            Download response <i class="bi bi-filetype-csv  downloadableIcons"></i>
+        </a>
+    </div>
+
+    <script>
+        async function generateTestCases() {
+            const prompt = document.getElementById('prompt').value;
+            const positiveCount = document.getElementById('positiveCount').value || 10;
+            const negativeCount = document.getElementById('negativeCount').value || 10;
+            const responseDiv = document.getElementById('response');
+            const downloadxlsx = document.getElementById('download-link-xlsx');
+            const downloadCsv = document.getElementById('download-link-csv');
+            const prmtValue = document.getElementById('promtValue');
+            downloadxlsx.style.display = 'none';
+            downloadCsv.style.display = 'none';
+            document.getElementById('prompt').value = '';
+            document.getElementById('positiveCount').value = '';
+            document.getElementById('negativeCount').value = '';
+
+            responseDiv.classList.add('visible');
+
+            responseDiv.innerHTML = '<div class="spinner"></div>';
+
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt, positiveCount, negativeCount })
+            });
+            console.log(response)
+
+            if (response.ok) {
+                const data = await response.json();
+                // Convert Markdown to HTML
+                const htmlContent = marked.parse(data.response);
+                responseDiv.innerHTML = htmlContent;
+                console.log(htmlContent)
+                // downloadLink.href = `/download?file_path=${data.file_path}`;
+                downloadxlsx.innerHTML = '<i class="bi bi-filetype-xls"></i>';
+                downloadxlsx.style.display = 'block';
+                downloadCsv.innerHTML = '<i class="bi bi-filetype-csv"></i>';
+                downloadCsv.style.display = 'block';
+                prmtValue.innerHTML = prompt;
+                prmtValue.style.display = 'block';
+
+            } else {
+                responseDiv.textContent = 'Error generating test cases.';
+                downloadxlsx.style.display = 'none';
+                downloadCsv.style.display = 'none';
+                prmtValue.style.display = 'none';
+            }
+        }
+        document.getElementById('prompt').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                generateTestCases();
+                document.getElementById('prompt').value = '';
+                document.getElementById('positiveCount').value = '';
+                document.getElementById('negativeCount').value = '';
+            }
+        });
+    </script>
+
+    <!-- Function for Export excel -->
+    <script>
+        function exportCSVExcel(type) {
+
+            if (type == '.csv') {
+                let options = {
+                    "separator": ",",
+                    "newline": "\n",
+                    "quoteFields": true,
+                    "excludeColumns": "",
+                    "excludeRows": "",
+                    "trimContent": true,
+                    "filename": "Testcase" + type,
+                    "appendTo": "#output"
+                }
+                $('#response').table2csv('download', options)
+            }
+            else {
+                $('#response').table2excel({
+                    exclude: ".no-export",
+                    filename: "Testcase" + type,
+                    fileext: type,
+                    exclude_links: true,
+                    exclude_inputs: true,
+                    preserveColors: true
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
